@@ -514,16 +514,10 @@ function distinct(arr) {
  *   }
  */
 function group(array, keySelector, valueSelector) {
-  const countries = [...new Set(array.map((i) => keySelector(i)))];
-
-  return new Map(
-    countries.map((country) => [
-      country,
-      array
-        .filter((i) => keySelector(i) === country)
-        .map((i) => valueSelector(i)),
-    ]),
-  );
+  return array.reduce((map, cur) => {
+    const key = keySelector(cur);
+    return map.set(key, (map.get(key) || []).concat(valueSelector(cur)));
+  }, new Map());
 }
 /**
  * Projects each element of the specified array to a sequence
@@ -539,7 +533,7 @@ function group(array, keySelector, valueSelector) {
  *   ['one','two','three'], x=>x.split('')  =>   ['o','n','e','t','w','o','t','h','r','e','e']
  */
 function selectMany(arr, childrenSelector) {
-  return arr.map((i) => childrenSelector(i)).flat();
+  return arr.map(childrenSelector).flat();
 }
 
 /**
